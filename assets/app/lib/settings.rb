@@ -24,6 +24,7 @@ module Lib
 
     SETTINGS = {
       notifications: :none,
+      language: :en,
       webhook: :slack,
       webhook_url: '',
       webhook_user_id: '',

@@ -19,10 +19,12 @@ module View
     needs :notifications, store: true, default: nil
     needs :webhook, store: true, default: nil
     needs :test_webhook_notification, store: true, default: false
+    needs :language, store: true, default: nil
 
     TILE_COLORS = Lib::Hex::COLOR.freeze
     ROUTE_COLORS = Lib::Settings::ROUTE_COLORS.freeze
     NOTIFICATION_OPTIONS = %i[none webhook email].freeze
+    LANGUAGE_OPTIONS = { en: 'English', zh: 'Chinese', ja: 'Japanese', fr: 'French', ko: 'Korean' }.freeze
     WEBHOOK_OPTIONS = { slack: '18oggs Slack', custom: 'Custom' }.freeze
 
     def render_content
@@ -85,6 +87,7 @@ module View
       inputs = [
         render_username,
         render_email,
+        render_language,
         h('div#settings__options', [
           render_notifications,
           h(:h3, 'Statistics'),
@@ -145,7 +148,7 @@ module View
 
     def reset_settings
       input_elm(:red_logo).checked = default_for(:red_logo)
-      %i[notifications webhook webhook_url webhook_user_id bg font bg2 font2 your_turn hotseat_game].each do |e|
+      %i[notifications language webhook webhook_url webhook_user_id bg font bg2 font2 your_turn hotseat_game].each do |e|
         input_elm(e).value = default_for(e)
       end
       TILE_COLORS.each { |color, hex_color| input_elm(color).value = hex_color }
@@ -156,6 +159,7 @@ module View
       end
       store(:notifications, default_for(:notifications), skip: true)
       store(:webhook, default_for(:webhook))
+      store(:language, default_for(:language))
 
       submit
     end
@@ -263,6 +267,34 @@ module View
                                attrs: { checked: @test_webhook_notification })
       elements
     end
+
+    def render_language
+      store(:language, setting_for(:language) || default_for(:language), skip: true) unless @language
+
+      language_options = LANGUAGE_OPTIONS.flat_map do |k, v|
+        attrs = { value: k }
+        attrs[:selected] = k if @language == k
+
+        h(:option, { attrs: attrs }, v)
+      end
+
+      language_change = lambda do
+        store(:language, Native(@inputs[:language]).elm&.value)
+      end
+
+      elements = []
+
+      elements << render_input(
+                    'Language',
+                    id: :language,
+                    el: 'select',
+                    on: { input: language_change },
+                    children: language_options,
+                  )
+
+      h(:div, elements)
+    end
+
 
     def render_stats(header)
       stats = @profile['stats']

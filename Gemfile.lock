@@ -20,6 +20,8 @@ GEM
       raabro (~> 1.4)
     get_process_mem (0.2.7)
       ffi (~> 1.0)
+    i18n (1.14.5)
+      concurrent-ruby (~> 1.0)
     kgio (2.11.4)
     libv8-node (16.10.0.0)
     libv8-node (16.10.0.0-x86_64-linux)
@@ -124,6 +126,7 @@ PLATFORMS
 
 DEPENDENCIES
   argon2
+  i18n
   message_bus
   mini_racer
   newrelic_rpm

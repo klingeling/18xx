@@ -19,6 +19,7 @@ def create_user(player_id, name)
     password: 'password',
     settings: {
       notifications: 'none',
+      language: 'en',
       webhook: nil,
       webhook_url: nil,
       webhook_user_id: nil,
